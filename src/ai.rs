@@ -3,8 +3,8 @@ use rand::prelude::*;
 
 use crate::components::*;
 
-const ENEMY_MOVEMENT_SPEED: i32 = 7;
-const HERO_MOVEMENT_SPEED: i32 = 4;
+const ENEMY_MOVEMENT_SPEED: i32 = 8;
+const HERO_MOVEMENT_SPEED: i32 = 3;
 
 pub struct AI;
 

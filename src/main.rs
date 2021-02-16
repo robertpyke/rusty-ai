@@ -145,14 +145,10 @@ fn main() -> Result<(), String> {
 
     initialize_player(&mut world, player_spritesheet);
 
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, -150));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(150, -190));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, 170));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, 170));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, 170));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, 170));
-    initialize_enemy(&mut world, enemy_spritesheet, Point::new(-150, 170));
-
+    for _ in 0..5 { 
+        initialize_enemy(&mut world, enemy_spritesheet, Point::new(thread_rng().gen_range(-200..200), thread_rng().gen_range(-200..200)));
+    }
+    
     let mut event_pump = sdl_context.event_pump()?;
     let mut i = 0;
     'running: loop {
