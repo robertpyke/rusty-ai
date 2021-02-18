@@ -13,7 +13,7 @@ pub struct EnemySpawner;
 impl<'a> System<'a> for EnemySpawner {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadStorage<'a, Enemy>);
     fn run(&mut self, (entities, lazy, enemies): Self::SystemData) {
-        if enemies.join().count() > MAX_ENEMIES {
+        if enemies.join().count() >= MAX_ENEMIES {
             return;
         }
 

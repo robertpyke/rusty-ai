@@ -1,6 +1,7 @@
 mod ai;
 mod animator;
 mod components;
+mod enemy_oob_purger;
 mod enemy_spawner;
 mod keyboard;
 mod physics;
@@ -92,10 +93,15 @@ fn main() -> Result<(), String> {
 
     let mut dispatcher = DispatcherBuilder::new()
         .with(keyboard::Keyboard, "Keyboard", &[])
-        .with(ai::AI, "AI", &[])
+        .with(enemy_spawner::EnemySpawner, "EnemySpawner", &[])
+        .with(ai::AI, "AI", &["EnemySpawner"])
+        .with(
+            enemy_oob_purger::EnemyOOBPurger,
+            "EnemyOOBPurger",
+            &["EnemySpawner", "AI"],
+        )
         .with(physics::Physics, "Physics", &["Keyboard", "AI"])
         .with(animator::Animator, "Animator", &["Keyboard", "AI"])
-        .with(enemy_spawner::EnemySpawner, "EnemySpawner", &[])
         .build();
 
     let mut world = World::new();
