@@ -1,5 +1,5 @@
-use specs::prelude::*;
 use rand::prelude::*;
+use specs::prelude::*;
 
 use crate::components::*;
 
@@ -54,7 +54,7 @@ impl<'a> System<'a> for AI {
                     None | _ if distance < nearest_distance => {
                         nearest_enemy_pos = Some(enemy_pos.clone());
                         nearest_distance = distance;
-                    },
+                    }
                     _ => {
                         // no-op (not nearer)
                     }
@@ -63,7 +63,6 @@ impl<'a> System<'a> for AI {
 
             match nearest_enemy_pos {
                 Some(nearest_enemy_pos) => {
-                    println!("Nearest enemy: {:?}", nearest_enemy_pos);
                     let enemy_x = nearest_enemy_pos.0.x;
                     let enemy_y = nearest_enemy_pos.0.y;
                     let x_delta = enemy_x - hero_x;
@@ -75,7 +74,7 @@ impl<'a> System<'a> for AI {
                             // head in the X
                             hero_vel.speed = match x_delta_abs {
                                 0..=HERO_MOVEMENT_SPEED => x_delta_abs,
-                                _ => HERO_MOVEMENT_SPEED
+                                _ => HERO_MOVEMENT_SPEED,
                             };
                             match x_delta {
                                 i32::MIN..=-1 => {
@@ -83,14 +82,14 @@ impl<'a> System<'a> for AI {
                                 }
                                 0..=i32::MAX => {
                                     hero_vel.direction = Direction::Right;
-                                },
+                                }
                             }
-                        }, 
+                        }
                         false if y_delta_abs > 0 => {
                             // head in the Y
                             hero_vel.speed = match y_delta_abs {
                                 0..=HERO_MOVEMENT_SPEED => y_delta_abs,
-                                _ => HERO_MOVEMENT_SPEED
+                                _ => HERO_MOVEMENT_SPEED,
                             };
                             match y_delta {
                                 i32::MIN..=-1 => {
@@ -98,19 +97,16 @@ impl<'a> System<'a> for AI {
                                 }
                                 0..=i32::MAX => {
                                     hero_vel.direction = Direction::Down;
-                                },
+                                }
                             }
-                        },
+                        }
                         _ => {
-                            println!("Not moving, at enemy.");
                             // Stop Moving
                             hero_vel.speed = 0;
                         }
                     }
                 }
-                
                 None => {
-                    println!("Not moving, no enemy.");
                     // Stop Moving
                     hero_vel.speed = 0;
                 }
