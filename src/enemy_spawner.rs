@@ -6,14 +6,16 @@ use rand::prelude::*;
 use super::sprite;
 use sdl2::rect::Point;
 
-const MAX_ENEMIES: usize = 16;
+const MAX_ENEMIES: usize = 20;
 
 pub struct EnemySpawner;
 
 impl<'a> System<'a> for EnemySpawner {
     type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadStorage<'a, Enemy>);
     fn run(&mut self, (entities, lazy, enemies): Self::SystemData) {
-        if enemies.join().count() >= MAX_ENEMIES {
+        let enemy_count = enemies.join().count();
+        println!("{} enemies", enemy_count);
+        if enemy_count >= MAX_ENEMIES {
             return;
         }
 
@@ -22,9 +24,6 @@ impl<'a> System<'a> for EnemySpawner {
             thread_rng().gen_range(-200..200),
         );
         let enemy_animation = sprite::enemy_animation();
-        // TODO: Inject enemies
-        // TODO: This code can be made nicer and more idiomatic using more pattern matching.
-        // Look up "rust irrefutable patterns" and use them here.
         lazy.create_entity(&entities)
             .with(AIControlled)
             .with(Enemy)

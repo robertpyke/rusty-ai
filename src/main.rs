@@ -8,6 +8,7 @@ mod physics;
 mod renderer;
 mod sprite;
 use rand::prelude::*;
+use std::time::{Duration, Instant};
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -17,8 +18,6 @@ use sdl2::rect::{Point, Rect};
 use sdl2::image::{self, InitFlag, LoadTexture};
 
 use specs::prelude::*;
-
-use std::time::Duration;
 
 use crate::components::*;
 
@@ -125,6 +124,8 @@ fn main() -> Result<(), String> {
     let mut event_pump = sdl_context.event_pump()?;
     let mut i = 0;
     'running: loop {
+        let start_time = Instant::now();
+
         // None - no change, Some(MovementCommand) - perform movement
         let mut movement_command = None;
         // Handle events
@@ -206,6 +207,9 @@ fn main() -> Result<(), String> {
             world.system_data(),
         )?;
 
+        let end_time = Instant::now();
+        let difference = end_time.duration_since(start_time);
+        println!("frame_time: {:?}", difference);
         // Time management!
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 20));
     }
