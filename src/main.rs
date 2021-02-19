@@ -31,6 +31,13 @@ pub enum MovementCommand {
 pub const WORLD_WIDTH: u32 = 800;
 pub const WORLD_HEIGHT: u32 = 600;
 
+#[macro_export]
+macro_rules! rect(
+    ($x:expr, $y:expr, $w:expr, $h:expr) => (
+        Rect::new($x as i32, $y as i32, $w as u32, $h as u32)
+    )
+);
+
 fn initialize_player(world: &mut World, player_spritesheet: usize) {
     let player_top_left_frame =
         Rect::new(0, 0, sprite::HERO_FRAME_WIDTH, sprite::HERO_FRAME_HEIGHT);
@@ -71,6 +78,11 @@ fn initialize_player(world: &mut World, player_spritesheet: usize) {
             speed: 0,
             direction: Direction::Right,
         })
+        .with(Telemetry {
+            enemy_collisions: 0,
+            enemy_oob: 0,
+            enemy_spawned: 0,
+        })
         .with(player_animation.right_frames[0].clone())
         .with(player_animation)
         .build();
@@ -83,6 +95,7 @@ fn main() -> Result<(), String> {
     // stay unused because if we don't have any variable at all then Rust will treat it as a
     // temporary value and drop it right away!
     let _image_context = image::init(InitFlag::PNG | InitFlag::JPG)?;
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
 
     let window = video_subsystem
         .window("rusty-ai", WORLD_WIDTH, WORLD_HEIGHT)
@@ -95,7 +108,7 @@ fn main() -> Result<(), String> {
         .build()
         .expect("could not make a canvas");
     let texture_creator = canvas.texture_creator();
-
+    let font = ttf_context.load_font("assets/fonts/Roboto/Roboto-Regular.ttf", 20)?;
     let mut dispatcher = DispatcherBuilder::new()
         .with(keyboard::Keyboard, "Keyboard", &[])
         .with(enemy_spawner::EnemySpawner, "EnemySpawner", &[])
@@ -215,6 +228,8 @@ fn main() -> Result<(), String> {
             &mut canvas,
             Color::RGB(i, 64, 255 - i),
             &textures,
+            &texture_creator,
+            &font,
             world.system_data(),
         )?;
 

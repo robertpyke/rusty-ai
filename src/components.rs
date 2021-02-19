@@ -1,6 +1,6 @@
+use sdl2::rect::{Point, Rect};
 use specs::prelude::*;
 use specs_derive::Component;
-use sdl2::rect::{Point, Rect};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
@@ -37,6 +37,15 @@ pub struct Position(pub Point);
 pub struct Velocity {
     pub speed: i32,
     pub direction: Direction,
+}
+
+/// The current speed and direction of a given entity
+#[derive(Component, Debug)]
+#[storage(HashMapStorage)]
+pub struct Telemetry {
+    pub enemy_collisions: u32,
+    pub enemy_oob: u32,
+    pub enemy_spawned: u32,
 }
 
 #[derive(Component, Debug, Clone)]

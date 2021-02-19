@@ -11,10 +11,14 @@ const MAX_ENEMIES: usize = 50;
 pub struct EnemySpawner;
 
 impl<'a> System<'a> for EnemySpawner {
-    type SystemData = (Entities<'a>, Read<'a, LazyUpdate>, ReadStorage<'a, Enemy>);
-    fn run(&mut self, (entities, lazy, enemies): Self::SystemData) {
+    type SystemData = (
+        Entities<'a>,
+        Read<'a, LazyUpdate>,
+        ReadStorage<'a, Enemy>,
+        WriteStorage<'a, Telemetry>,
+    );
+    fn run(&mut self, (entities, lazy, enemies, mut telemetries): Self::SystemData) {
         let enemy_count = enemies.join().count();
-        println!("{} enemies", enemy_count);
         if enemy_count >= MAX_ENEMIES {
             return;
         }
@@ -35,5 +39,9 @@ impl<'a> System<'a> for EnemySpawner {
             .with(enemy_animation.right_frames[0].clone())
             .with(enemy_animation)
             .build();
+        match (&mut telemetries).join().last() {
+            Some(telemetry) => telemetry.enemy_spawned += 1,
+            None => eprintln!("Telemetry Missing"),
+        }
     }
 }

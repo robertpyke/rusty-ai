@@ -16,9 +16,10 @@ impl<'a> System<'a> for EnemyColliderPurger {
         ReadStorage<'a, Position>,
         ReadStorage<'a, Hero>,
         ReadStorage<'a, Enemy>,
+        WriteStorage<'a, Telemetry>,
     );
 
-    fn run(&mut self, (entities, positions, heroes, enemies): Self::SystemData) {
+    fn run(&mut self, (entities, positions, heroes, enemies, mut telemetries): Self::SystemData) {
         for (hero_pos, _) in (&positions, &heroes).join() {
             let hero_rect = Rect::new(
                 hero_pos.0.x,
@@ -37,6 +38,10 @@ impl<'a> System<'a> for EnemyColliderPurger {
 
                 if hero_rect.intersection(enemy_rect).is_some() {
                     entities.delete(enemy_entity).unwrap();
+                    match (&mut telemetries).join().last() {
+                        Some(telemetry) => telemetry.enemy_collisions += 1,
+                        None => eprintln!("Telemetry Missing"),
+                    }
                 }
             }
         }
