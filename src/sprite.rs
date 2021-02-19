@@ -4,9 +4,14 @@ use sdl2::rect::Rect;
 
 const ENEMY_SPRITESHEET: usize = 1;
 pub const TEXTURE_PATHS: [&str; 2] = ["assets/bardo.png", "assets/reaper.png"];
+pub const ENEMY_FRAME_WIDTH: u32 = 32;
+pub const ENEMY_FRAME_HEIGHT: u32 = 36;
+
+pub const HERO_FRAME_WIDTH: u32 = 26;
+pub const HERO_FRAME_HEIGHT: u32 = 36;
 
 pub fn enemy_animation() -> MovementAnimation {
-    let enemy_top_left_frame = Rect::new(0, 0, 32, 36);
+    let enemy_top_left_frame = Rect::new(0, 0, ENEMY_FRAME_WIDTH, ENEMY_FRAME_HEIGHT);
     return MovementAnimation {
         current_frame: 0,
         up_frames: character_animation_frames(

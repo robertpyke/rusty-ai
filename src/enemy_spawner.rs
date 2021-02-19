@@ -6,7 +6,7 @@ use rand::prelude::*;
 use super::sprite;
 use sdl2::rect::Point;
 
-const MAX_ENEMIES: usize = 20;
+const MAX_ENEMIES: usize = 50;
 
 pub struct EnemySpawner;
 

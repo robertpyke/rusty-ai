@@ -1,12 +1,14 @@
 mod ai;
 mod animator;
 mod components;
+mod enemy_collider_purger;
 mod enemy_oob_purger;
 mod enemy_spawner;
 mod keyboard;
 mod physics;
 mod renderer;
 mod sprite;
+
 use rand::prelude::*;
 use std::time::{Duration, Instant};
 
@@ -26,8 +28,12 @@ pub enum MovementCommand {
     Move(Direction),
 }
 
+pub const WORLD_WIDTH: u32 = 800;
+pub const WORLD_HEIGHT: u32 = 600;
+
 fn initialize_player(world: &mut World, player_spritesheet: usize) {
-    let player_top_left_frame = Rect::new(0, 0, 26, 36);
+    let player_top_left_frame =
+        Rect::new(0, 0, sprite::HERO_FRAME_WIDTH, sprite::HERO_FRAME_HEIGHT);
 
     let player_animation = MovementAnimation {
         current_frame: 0,
@@ -79,7 +85,7 @@ fn main() -> Result<(), String> {
     let _image_context = image::init(InitFlag::PNG | InitFlag::JPG)?;
 
     let window = video_subsystem
-        .window("rusty-ai", 800, 600)
+        .window("rusty-ai", WORLD_WIDTH, WORLD_HEIGHT)
         .position_centered()
         .build()
         .expect("could not initialize video subsystem");
@@ -97,6 +103,11 @@ fn main() -> Result<(), String> {
         .with(
             enemy_oob_purger::EnemyOOBPurger,
             "EnemyOOBPurger",
+            &["EnemySpawner", "AI"],
+        )
+        .with(
+            enemy_collider_purger::EnemyColliderPurger,
+            "EnemyColliderPurger",
             &["EnemySpawner", "AI"],
         )
         .with(physics::Physics, "Physics", &["Keyboard", "AI"])
